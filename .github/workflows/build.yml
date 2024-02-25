@@ -2,9 +2,8 @@ name: "Build"
 on:
   push:
   pull_request:
-  schedule:
-    - cron: "37 13 * * *"
 jobs:
+  # Job for checking yarn cache
   check:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -12,32 +11,37 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - run: yarn install --check-cache
         working-directory: app-frontend
-  build:
-    name: "Build on JDK 21 and Node.JS 20.x"
+
+  # Building backend
+  kotlin-build:
+    name: "Build on JDK 21"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: "Compiled Scripts Cache"
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/awesome-kotlin
-          key: kotlin-scripts-cache
       - uses: actions/setup-java@v4
         with:
           java-version: "21"
           distribution: "liberica"
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew check installDist
-      - name: "Generate data for frontend"
-        run: ./build/install/awesome-kotlin/bin/awesome-kotlin
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "Backend Application"
+          path: "app-backend/build/install/"
+          retention-days: 1
+
+  # Building frontend
+  react-build:
+    name: "Build on Node.JS 22.x"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - run: yarn install
         working-directory: app-frontend
       - run: yarn run build
@@ -47,26 +51,21 @@ jobs:
           name: "Frontend Application"
           path: "app-frontend/dist/"
           retention-days: 1
-      - uses: actions/upload-artifact@v4
-        with:
-          name: "Readme"
-          path: "readme/"
-          retention-days: 1
+
+  # Building and pushing image
   build-and-push-image:
-    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [kotlin-build, react-build]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: "Frontend Application"
-          path: "app-frontend/dist/"
+          name: "Backend Application"
+          path: "app-backend/build/install/"
       - uses: actions/download-artifact@v4
         with:
-          name: "Readme"
-          path: "readme/"
-      - run: ls -laR
+          name: "Frontend Application"
+          path: "app-frontend/dist/"
       - name: "Set up Docker Buildx"
         uses: docker/setup-buildx-action@v3
       - name: "Login to GHCR"
@@ -80,11 +79,5 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          context: app-frontend
-          tags: ghcr.io/heapy/awesome-kotlin:main
-      - name: "Deploy Readme"
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./readme
-          publish_branch: readme
+          context: .
+          tags: ghcr.io/heapy/awesome-kotlin:main-beta

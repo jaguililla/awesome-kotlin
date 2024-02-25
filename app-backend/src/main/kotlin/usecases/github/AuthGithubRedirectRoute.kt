@@ -1,10 +1,9 @@
 package usecases.github
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import ktor.KtorRoute
+import infra.ktor.KtorRoute
 
 class GithubRedirectRoute(
     private val githubRedirectUrl: GithubRedirectUrl,

@@ -1,7 +1,7 @@
 plugins {
     application
-    kotlin("jvm").version("2.0.0")
-    kotlin("plugin.serialization").version("2.0.0")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 application {
@@ -19,13 +19,13 @@ tasks.test {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.8.1")
+    implementation(libs.kotlinx.coroutines.jdk8)
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.2")
 
-    implementation("ch.qos.logback:logback-classic:1.5.8")
+    implementation(libs.logback)
 
     implementation("com.rometools:rome:2.1.0")
     implementation("com.github.dfabulich:sitemapgen4j:1.1.2")
@@ -41,6 +41,7 @@ dependencies {
     implementation("io.ktor:ktor-client-apache:2.3.12")
     implementation("io.ktor:ktor-client-jackson:2.3.12")
 
-    testImplementation("io.mockk:mockk:1.13.12")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+    testImplementation(libs.mockk)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }

@@ -1,10 +1,10 @@
 package usecases.github
 
-import io.ktor.server.application.call
 import io.ktor.server.response.*
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
-import ktor.KtorRoute
+import infra.ktor.KtorRoute
+import io.ktor.http.*
 
 class GithubCallbackRoute(
     private val githubAccessToken: GithubAccessToken,
@@ -16,9 +16,10 @@ class GithubCallbackRoute(
 
             val accessToken = githubAccessToken(code)
 
-            println(accessToken)
-
-            call.respond("Hello, Github! $accessToken")
+            // set cookie and redirect
+            call.response.cookies.append("accessToken", "Bearer $accessToken")
+            call.response.headers.append(HttpHeaders.Location, "/")
+            call.respond(HttpStatusCode.TemporaryRedirect)
         }
     }
 }

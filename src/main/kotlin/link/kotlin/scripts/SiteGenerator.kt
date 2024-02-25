@@ -1,11 +1,9 @@
 package link.kotlin.scripts
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import kotlinx.coroutines.runBlocking
 import link.kotlin.scripts.dsl.Article
 import link.kotlin.scripts.dsl.Category
 import link.kotlin.scripts.model.toDto
-import link.kotlin.scripts.utils.callLogger
 import link.kotlin.scripts.utils.copyResources
 import link.kotlin.scripts.utils.writeFile
 import java.nio.file.Files
@@ -15,17 +13,13 @@ interface SiteGenerator {
     fun createDistFolders()
     fun copyResources()
     fun generateLinksJson(links: List<Category>)
-    fun generateKotlinVersionsJson()
     fun generateSitemap(articles: List<Article>)
     fun generateFeeds(articles: List<Article>)
     fun generateArticles(articles: List<Article>)
-
-    companion object
 }
 
-private class DefaultSiteGenerator(
+class DefaultSiteGenerator(
     private val mapper: ObjectMapper,
-    private val kotlinVersionFetcher: KotlinVersionFetcher,
     private val sitemapGenerator: SitemapGenerator,
     private val pagesGenerator: PagesGenerator,
     private val rssGenerator: RssGenerator
@@ -44,19 +38,12 @@ private class DefaultSiteGenerator(
             "$base/pages/github.css" to "$dist/github.css",
             "$base/pages/styles.css" to "$dist/styles.css",
             "$base/pages/highlight.min.js" to "$dist/highlight.min.js",
-            "$base/root/robots.txt" to "$dist/robots.txt",
-            "$base/root/awesome-kotlin.svg" to "$dist/awesome-kotlin.svg"
         )
     }
 
     override fun generateLinksJson(links: List<Category>) {
         val dtos = links.map { category -> category.toDto() }
-        writeFile("$base/app/links.json", mapper.writeValueAsString(dtos))
-    }
-
-    override fun generateKotlinVersionsJson() = runBlocking {
-        val versions = kotlinVersionFetcher.getLatestVersions(listOf("1.9", "2.0"))
-        writeFile("$base/app/versions.json", mapper.writeValueAsString(versions))
+        writeFile("./app-backend/src/main/resources/links/links.json", mapper.writeValueAsString(dtos))
     }
 
     override fun generateSitemap(articles: List<Article>) {
@@ -74,22 +61,4 @@ private class DefaultSiteGenerator(
     override fun generateArticles(articles: List<Article>) {
         pagesGenerator.generate(articles, dist)
     }
-}
-
-fun SiteGenerator.Companion.default(
-    mapper: ObjectMapper,
-    kotlinVersionFetcher: KotlinVersionFetcher,
-    sitemapGenerator: SitemapGenerator,
-    pagesGenerator: PagesGenerator,
-    rssGenerator: RssGenerator
-): SiteGenerator {
-    val instance = DefaultSiteGenerator(
-        mapper = mapper,
-        kotlinVersionFetcher = kotlinVersionFetcher,
-        sitemapGenerator = sitemapGenerator,
-        pagesGenerator = pagesGenerator,
-        rssGenerator = rssGenerator
-    )
-
-    return callLogger<SiteGenerator>(instance)
 }

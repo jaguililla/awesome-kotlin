@@ -4,6 +4,7 @@ Followers
 Tags -> Topics
 Topic: Graph
 https://awesomejava.resamvi.io/
+https://akkurate.dev/
 
 Possible categories:
 Serialization

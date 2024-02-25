@@ -1,0 +1,5 @@
+GET {{host}}/rss.xml
+
+###
+
+GET {{host}}/rss-full.xml

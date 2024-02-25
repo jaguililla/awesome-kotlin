@@ -35,20 +35,20 @@ GET {{host}}/
 
 ###
 
-GET {{host}}/ping/test
-
-###
-
 GET {{host}}/kugs
 
 ###
 
 POST {{host}}/kugs
 
-###
+### Prometheus Metrics
+GET {{host}}/metrics
 
-GET {{host}}/metrics-micrometer
+### Healthcheck
+GET {{host}}/healthcheck
 
-###
-
+### Test
 GET {{host}}/test
+
+### Home Page
+GET {{host}}/home

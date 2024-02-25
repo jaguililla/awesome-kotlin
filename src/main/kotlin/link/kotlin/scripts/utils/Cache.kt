@@ -5,7 +5,6 @@ import link.kotlin.scripts.model.ApplicationConfiguration
 import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.security.MessageDigest
 import kotlin.reflect.KClass
 
@@ -49,7 +48,7 @@ class FileCache(
     }
 }
 
-private class DisableCache(
+class DisableCache(
     private val cache: Cache,
     private val configuration: ApplicationConfiguration
 ) : Cache {
@@ -64,23 +63,4 @@ private class DisableCache(
             cache.get(key, type)
         } else null
     }
-
-}
-
-fun Cache.Companion.default(
-    folder: Path = Paths.get(System.getProperty("user.home"), ".cache", "awesome-kotlin"),
-    mapper: ObjectMapper,
-    configuration: ApplicationConfiguration
-): Cache {
-    Files.createDirectories(folder)
-
-    val fileCache = FileCache(
-        folder = folder,
-        mapper = mapper
-    )
-
-    return DisableCache(
-        cache = fileCache,
-        configuration = configuration
-    )
 }

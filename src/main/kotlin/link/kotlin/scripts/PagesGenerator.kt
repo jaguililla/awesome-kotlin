@@ -13,11 +13,9 @@ import java.time.format.FormatStyle
 
 interface PagesGenerator {
     fun generate(articles: List<Article>, dist: String)
-
-    companion object
 }
 
-private class DefaultPagesGenerator : PagesGenerator {
+class DefaultPagesGenerator : PagesGenerator {
     override fun generate(articles: List<Article>, dist: String) {
         val articleBody = articles
             .groupBy { formatDate(it.date) }
@@ -131,8 +129,4 @@ fun getFeatures(features: List<ArticleFeature>): String {
                 """
         }
     }
-}
-
-fun PagesGenerator.Companion.default(): PagesGenerator {
-    return DefaultPagesGenerator()
 }

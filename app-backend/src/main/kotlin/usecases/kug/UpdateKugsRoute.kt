@@ -1,11 +1,10 @@
 package usecases.kug
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import ktor.KtorRoute
+import infra.ktor.KtorRoute
 
 class UpdateKugsRoute(
     private val kugDownloadService: KugDownloadService,

@@ -1,38 +1,38 @@
 package usecases.signup
 
-import JooqModule
+import infra.db.JooqModule
 import at.favre.lib.crypto.bcrypt.BCrypt
-import di.bean
+import io.heapy.komok.tech.di.lib.Module
 import io.ktor.http.*
-import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import kotlinx.serialization.Serializable
-import ktor.KtorRoute
-import ktor.plugins.AuthenticationException
+import infra.ktor.KtorRoute
+import infra.ktor.features.AuthenticationException
 import kotlin.time.Duration.Companion.days
 
+@Module
 open class LoginModule(
     private val jooqModule: JooqModule,
     private val jwtModule: JwtModule,
 ) {
-    open val bcryptVerifier by bean<BCrypt.Verifyer> {
+    open val bcryptVerifier by lazy<BCrypt.Verifyer> {
         BCrypt.verifyer()
     }
 
-    open val kotlinerDao by bean {
+    open val kotlinerDao by lazy {
         DefaultKotlinerDao(
-            dslContext = jooqModule.dslContext.get,
+            dslContext = jooqModule.dslContext,
         )
     }
 
-    open val route by bean {
+    open val route by lazy {
         LoginRoute(
-            generateJwt = jwtModule.generateJwt.get,
-            bcryptVerifier = bcryptVerifier.get,
-            kotlinerDao = kotlinerDao.get,
+            generateJwt = jwtModule.generateJwt,
+            bcryptVerifier = bcryptVerifier,
+            kotlinerDao = kotlinerDao,
         )
     }
 }
@@ -43,7 +43,7 @@ class LoginRoute(
     private val kotlinerDao: KotlinerDao,
 ) : KtorRoute {
     override fun Routing.install() {
-        post("/login") {
+        post("/api/login") {
             val request = call.receive<LoginBody>()
             val db = kotlinerDao.get(request.email)
 
@@ -59,7 +59,7 @@ class LoginRoute(
                 call.response.cookies.append(Cookie(
                     name ="token",
                     value = token,
-                    secure = false,
+                    secure = true,
                     httpOnly = true,
                     maxAge = 30.days.inWholeSeconds.toInt(),
                     path = "/",
