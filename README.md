@@ -1013,6 +1013,7 @@ Here is the awesome badge for your project:
 * [kiruto/debug-bottle](https://github.com/kiruto/debug-bottle) - Debug Bottle is an Android runtime debug / develop tools written using kotlin language.
 * [didi/booster](https://github.com/didi/booster) - Booster is an optimization toolkit for Android applications
 * [Kotlin/kdoctor](https://github.com/Kotlin/kdoctor) - CLI tool that helps to set up the environment for Kotlin Multiplatform Mobile app development.
+* [jzbrooks/vgo](https://github.com/jzbrooks/vgo) - vgo is a tool for optimizing and converting between vector artwork representations.
 
 ### <a name="android-tests"></a>Tests <sup>[Back ⇈](#android-tests-subcategory)</sup>
 * [KakaoCup/Kakao](https://github.com/KakaoCup/Kakao) - Nice and simple DSL for Espresso in Kotlin
