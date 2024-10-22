@@ -9,7 +9,7 @@ import infra.ktor.KtorRoute
 class MetricsRoute(
     private val meterRegistry: PrometheusMeterRegistry,
 ) : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/metrics") {
             call.respondText(
                 text = meterRegistry.scrape(),

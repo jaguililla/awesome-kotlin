@@ -7,12 +7,12 @@ import io.heapy.komok.tech.di.lib.Module
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import infra.ktor.KtorRoute
+import io.ktor.server.routing.Route
 import java.security.SecureRandom
 
 @Module
@@ -43,7 +43,7 @@ class RegisterRoute(
     private val bcryptHasher: BCrypt.Hasher,
     private val kotlinerDao: KotlinerDao,
 ) : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         post("/register") {
             val request = call.receive<RegisterBody>()
 

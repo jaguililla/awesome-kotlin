@@ -30,6 +30,7 @@ class RobotsTxtRouteTest {
             environment {
                 config = MapApplicationConfig()
             }
+
             routing {
                 route.installRoute()
             }

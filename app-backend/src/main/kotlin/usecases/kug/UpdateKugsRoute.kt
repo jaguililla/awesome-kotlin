@@ -9,7 +9,7 @@ import infra.ktor.KtorRoute
 class UpdateKugsRoute(
     private val kugDownloadService: KugDownloadService,
 ) : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         post("/kugs") {
             kugDownloadService.pull()
                 .map { section ->

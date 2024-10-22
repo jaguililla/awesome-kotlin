@@ -1,15 +1,15 @@
 package usecases.github
 
 import io.ktor.server.response.*
-import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import infra.ktor.KtorRoute
 import io.ktor.http.*
+import io.ktor.server.routing.Route
 
 class GithubCallbackRoute(
     private val githubAccessToken: GithubAccessToken,
 ) : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/auth/github") {
             val code = call.request.queryParameters["code"]
                 ?: error("No code provided")

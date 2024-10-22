@@ -6,11 +6,11 @@ import io.heapy.komok.tech.di.lib.Module
 import io.ktor.http.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import kotlinx.serialization.Serializable
 import infra.ktor.KtorRoute
 import infra.ktor.features.AuthenticationException
+import io.ktor.server.routing.Route
 import kotlin.time.Duration.Companion.days
 
 @Module
@@ -42,7 +42,7 @@ class LoginRoute(
     private val bcryptVerifier: BCrypt.Verifyer,
     private val kotlinerDao: KotlinerDao,
 ) : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         post("/api/login") {
             val request = call.receive<LoginBody>()
             val db = kotlinerDao.get(request.email)

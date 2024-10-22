@@ -5,7 +5,7 @@ import io.ktor.server.routing.*
 import infra.ktor.KtorRoute
 
 class HealthCheckRoute : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/healthcheck") {
             call.respondText(
                 text = """{"status":"ok"}""",

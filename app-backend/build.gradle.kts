@@ -14,11 +14,15 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(
             "-Xcontext-receivers",
         )
+    }
+
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 

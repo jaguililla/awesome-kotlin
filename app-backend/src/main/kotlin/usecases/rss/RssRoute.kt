@@ -6,7 +6,7 @@ import io.ktor.server.routing.*
 import infra.ktor.KtorRoute
 
 class RssRoute : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/rss.xml") {
             call.respondText("<xml></xml>", ContentType.Application.Atom.withCharset(Charsets.UTF_8))
         }
@@ -14,7 +14,7 @@ class RssRoute : KtorRoute {
 }
 
 class FullRssRoute : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/rss-full.xml") {
             call.response.headers.append(HttpHeaders.ContentType, ContentType.Application.Atom.withCharset(Charsets.UTF_8).toString())
             call.respond(message = "<xml></xml>")

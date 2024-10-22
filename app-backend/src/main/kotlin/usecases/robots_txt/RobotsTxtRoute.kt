@@ -23,7 +23,7 @@ class RobotsTxtRoute(
         }
     }
 
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/robots.txt") {
             call.respondText(
                 """

@@ -2,11 +2,11 @@ package usecases.links
 
 import io.heapy.komok.tech.di.lib.Module
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import infra.ktor.KtorRoute
+import io.ktor.server.routing.Route
 
 @Module
 open class LinksModule {
@@ -24,7 +24,7 @@ open class LinksModule {
 class LinksRoute(
     private val links: List<CategoryV1>,
 ) : KtorRoute {
-    override fun Routing.install() {
+    override fun Route.install() {
         get("/api/links") {
             val isAwesome = call.request.queryParameters["awesome"]?.toBoolean() ?: false
             val isKugs = call.request.queryParameters["kugs"]?.toBoolean() ?: false
